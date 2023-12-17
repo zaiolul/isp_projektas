@@ -1,51 +1,57 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
-//import img1 from './Nuotraukos/food1.png'
-//import img2 from './Nuotraukos/pizza.PNG'
-import { Outlet, Link } from "react-router-dom";
-export default function ActionAreaCard() {
-  return (
-    <div>
-    <Card sx={{ maxWidth:  700, margin: 'auto', marginTop: 5}}>
-      <CardActionArea component={Link} to={'/restoranai'}>
-        <CardMedia
-          component="img"
-          height="200"
-   
-          alt="sth"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            Bili Bizza
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-           Skaniausios picos Kaune! Mėgaukis tikra itališka pica iš namų patogumo.
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
-     <Card sx={{ maxWidth:  700, margin: 'auto', marginTop: 5}}>
-     <CardActionArea component={Link} to={'/restoranai'}>
-       <CardMedia
-         component="img"
-         height="200"
+import { Link } from 'react-router-dom';
 
-         alt="green iguana"
-       />
-       <CardContent>
-         <Typography gutterBottom variant="h5" component="div">
-           Bauda
-         </Typography>
-         <Typography variant="body2" color="text.secondary">
-         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-         </Typography>
-       </CardContent>
-     </CardActionArea>
-   </Card>
-   </div>
-  );
+export default function RestoranaiList() {
+    const [restoranai, setRestoranai] = useState([]);
+
+    useEffect(() => {
+        const fetchRestoranai = async () => {
+            try {
+                const response = await fetch('http://localhost:5031/restoranas');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                setRestoranai(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchRestoranai();
+    }, []);
+
+
+    return (
+
+
+        <div>
+            {restoranai.map((restoranas) => (
+                <Card key={restoranas.restoranasID}
+                    sx={{ maxWidth: 700, margin: 'auto', marginTop: 5 }}
+                >
+                    <CardActionArea component={Link} to={`/restoranas/${restoranas.restoranasID}`}>
+                        <CardMedia
+                            component="img"
+                            height="200"
+                            alt={restoranas.nuotrauka}
+                        />
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                {restoranas.pavadinimas}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {restoranas.aprasymas}
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            ))}
+        </div>
+    );
 }
