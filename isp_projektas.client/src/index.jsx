@@ -32,14 +32,14 @@ root.render(
           <Route path="/apmokejimas" element={<Apmokejimas />} />
           <Route path="/home" element={<Home />} />
           <Route path="/krepselis" element={<Krepselis />} />
-          <Route path="/kurtiPatiekala" element={<KurtiPatiekala />} />
+          <Route path="/kurtiPatiekala/:restoranasId" element={<KurtiPatiekala />} />
           <Route path="/kurtiRestorana" element={<KurtiRestorana />} />
           <Route path="/naudotojas" element={<Naudotojas />} />
           <Route path="/prisijungimas" element={<Prisijungimas />} />
-          <Route path="/redaguotiPatiekala" element={<RedaguotiPatiekala />} />
+          <Route path="/redaguotiPatiekala/:id" element={<RedaguotiPatiekala />} />
           <Route path="/redaguotiRestorana" element={<RedaguotiRestorana />} />
           <Route path="/registracija" element={<Registracija />} />
-          <Route path="/restoranai" element={<Restoranai />} />
+          <Route path="/restoranas/:restoranasId" element={<Restoranai />} />
           <Route path="/uzsakymuIstorija" element={<UzsakymuIstorija />} />
         </Routes>
       </BrowserRouter>

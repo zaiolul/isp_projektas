@@ -26,10 +26,11 @@ export default function ButtonAppBar() {
                     <Typography variant="h4" component="div" sx={{ marginRight: 8 }}>
                         Molt
                     </Typography>
+                    <Button color="inherit" component={Link} to={'/home'}>Pagrindinis</Button>
                     <Button color="inherit" component={Link} to={'/krepselis'}>Krepšelis</Button>
                     <Button color="inherit" component={Link} to={'/kurtiRestorana'}>Kurti restoraną</Button>
                     <Button color="inherit" component={Link} to={'/naudotojas'}>Naudotojas</Button>
-                    
+
                 </Toolbar>
             </AppBar>
             <Outlet />

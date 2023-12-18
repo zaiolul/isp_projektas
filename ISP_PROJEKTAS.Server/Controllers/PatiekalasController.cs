@@ -1,11 +1,12 @@
 ﻿using ISP_PROJEKTAS.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WarehelperAPI.Data;
 
 namespace ISP_PROJEKTAS.Server.Controllers
 {
 	[ApiController]
-	[Route("[controller]")]
+	[Route("api/[controller]")]
 	public class PatiekalasController : ControllerBase
 	{
 		private readonly MoltDbContext _context;
@@ -14,27 +15,100 @@ namespace ISP_PROJEKTAS.Server.Controllers
 			_context = context;
 		}
 
-		[HttpGet(Name = "GetPatiekalas")]
-		public ActionResult<IEnumerable<Patiekalas>> Get(/*int? restaurantId = 1*/)
+		[HttpGet("{patiekalasId}")]
+		public ActionResult<Patiekalas> GetPatiekalasById(int patiekalasId)
 		{
+			var patiekalasFromDb = _context.patiekalas
+				.FirstOrDefault(p => p.PatiekalasID == patiekalasId);
 
-			var patiekalaiFromDb = _context.patiekalas
-				//.Where(p => p.FKRestoranasID == 1)
-				.ToList();
-			Console.WriteLine("aaaaa");
-			List<Patiekalas> patiekalai = patiekalaiFromDb.Select(patiekalasFromDb => new Patiekalas
+			if (patiekalasFromDb == null)
 			{
-				Pavadinimas = patiekalasFromDb.Pavadinimas,
-				Kaina = patiekalasFromDb.Kaina,
-				MeniuKategorija = patiekalasFromDb.MeniuKategorija,
-				Kalorijos = patiekalasFromDb.Kalorijos,
-				Aprasymas = patiekalasFromDb.Aprasymas,
-				TinkaVeganams = patiekalasFromDb.TinkaVeganams,
-				Astrumas = patiekalasFromDb.Astrumas,
-				PatiekalasID = patiekalasFromDb.PatiekalasID,
-				FKRestoranasID = patiekalasFromDb.FKRestoranasID
-			}).ToList();
-			return Ok(patiekalai);
+				return NotFound();
+			}
+
+			return Ok(patiekalasFromDb);
+		}
+		[HttpGet("byRestoranas/{restoranasId}")]
+		public ActionResult<IEnumerable<Patiekalas>> GetPatiekalasByRestoranasId(int restoranasId)
+		{
+			var patiekalaiFromDb = _context.patiekalas
+				.Where(p => p.FKRestoranasID == restoranasId)
+				.ToList();
+
+			return Ok(patiekalaiFromDb);
+		}
+		[HttpPut("{id}")]
+		public async Task<IActionResult> UpdatePatiekalas(int id, Patiekalas updatedPatiekalas)
+		{
+			if (id != updatedPatiekalas.PatiekalasID)
+			{
+				return BadRequest();
+			}
+
+			_context.Entry(updatedPatiekalas).State = EntityState.Modified;
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!PatiekalasExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+
+			return NoContent();
+		}
+		[HttpPost]
+		public async Task<IActionResult> CreatePatiekalas([FromBody] Patiekalas patiekalasViewModel)
+		{
+			Console.WriteLine($"Received data:", patiekalasViewModel.Aprasymas);
+			if (patiekalasViewModel == null)
+			{
+				return BadRequest("Invalid patiekalas data");
+			}
+
+			var newPatiekalas = new Patiekalas
+			{
+				Pavadinimas = patiekalasViewModel.Pavadinimas,
+				Kaina = patiekalasViewModel.Kaina,
+				MeniuKategorija = patiekalasViewModel.MeniuKategorija,
+				Kalorijos = patiekalasViewModel.Kalorijos,
+				Aprasymas = patiekalasViewModel.Aprasymas,
+				TinkaVeganams = patiekalasViewModel.TinkaVeganams,
+				Astrumas = patiekalasViewModel.Astrumas,
+				FKRestoranasID = patiekalasViewModel.FKRestoranasID
+			};
+
+			_context.patiekalas.Add(newPatiekalas);
+			await _context.SaveChangesAsync();
+
+			return Ok(newPatiekalas);
+		}
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeletePatiekalas(int id)
+		{
+			var patiekalasToDelete = await _context.patiekalas.FindAsync(id);
+
+			if (patiekalasToDelete == null)
+			{
+				return NotFound();
+			}
+
+			_context.patiekalas.Remove(patiekalasToDelete);
+			await _context.SaveChangesAsync();
+
+			return Ok(patiekalasToDelete);
+		}
+		private bool PatiekalasExists(int id)
+		{
+			return _context.patiekalas.Any(e => e.PatiekalasID == id);
 		}
 	}
 }
