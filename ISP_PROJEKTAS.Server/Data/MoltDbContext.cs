@@ -11,6 +11,7 @@ namespace WarehelperAPI.Data
 		private readonly IConfiguration configuration;
 		public DbSet<Patiekalas> patiekalas { get; set; }
 		public DbSet<Restoranas> restoranas { get; set; }
+		public DbSet<Restoranas> krepselio_Preke { get; set; }
 
 		public MoltDbContext(IConfiguration configuration)
 		{
