@@ -14,7 +14,7 @@ namespace ISP_PROJEKTAS.Server.Controllers
 			_context = context;
 		}
 
-		[HttpGet(Name = "GetKrepselioPreke")]
+		[HttpGet]
 		public ActionResult<IEnumerable<KrepselioPreke>> Get()
 		{
 			var krepselioPrekesFromDb = _context.krepselio_Preke.ToList();

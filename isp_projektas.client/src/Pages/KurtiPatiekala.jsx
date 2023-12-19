@@ -17,7 +17,7 @@ const CreateForm = () => {
         aprasymas: '',
         kalorijos: 0,
         tinkaVeganams: 0,
-        astrumas: 0,
+        astrumas: 1,
         fkRestoranasID: restoranasId,
     });
     function addCategory(event) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import { Outlet, Link } from "react-router-dom";
+import Apriori from './apriori.jsx';
 import Navbar from '../navbar.jsx';
 import ReactDOM from 'react-dom';
 import Card from '@mui/material/Card';
@@ -12,7 +13,7 @@ import { CardActionArea } from '@mui/material';
 
 function LinksHome() {
     const [restoranai, setRestoranai] = useState([]);
-    async function fetchKategorijos(id)  {
+    async function fetchKategorijos(id) {
         const kategorijosResponse = await fetch(`http://localhost:5031/api/restoranas//${id}/kategorijos`);
         if (!kategorijosResponse.ok) {
             throw new Error(`HTTP error! Status: ${kategorijosResponse.status}`);
@@ -29,7 +30,7 @@ function LinksHome() {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-               
+
                 const data = await response.json();
                 //fetchKategorijos(data);
                 setRestoranai(data);
@@ -46,6 +47,9 @@ function LinksHome() {
                 <h1>Pagrindinis</h1>
                 <Outlet />
             </Navbar>
+            <div>
+                <Apriori />
+            </div>
             <div>
                 {restoranai.map((restoranas) => (
                     <Card key={restoranas.restoranasID}
