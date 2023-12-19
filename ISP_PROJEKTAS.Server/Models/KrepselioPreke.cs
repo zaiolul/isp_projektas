@@ -18,5 +18,14 @@ namespace ISP_PROJEKTAS.Server.Models
 
 		[Column("fk_Uzsakymasid_Uzsakymas")]
 		public int FKUzsakymasID { get; set; }
+
+		[NotMapped]
+		public string PatiekalasPavadinimas { get; set; }
+
+		[NotMapped]
+		public float PatiekalasKaina { get; set; }
+
+		[NotMapped]
+		public string RestoranasPavadinimas { get; set; }
 	}
 }
