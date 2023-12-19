@@ -14,6 +14,41 @@ export default function Restoranai() {
     const { restoranasId } = useParams();
     const [patiekalai, setPatiekalai] = useState([]);
     const [restoranas, setRestoranas] = useState(null);
+
+    //Uzsakymo id reikia pasiimti
+    const addToBasket = async (patiekalasId) => {
+        try {
+            const klientasID = 1;// Add klientas id 
+            const uzsakymasResponse = await fetch(`http://localhost:5031/Uzsakymas/ByKlientasID/${klientasID}`);
+            const uzsakymasData = await uzsakymasResponse.json();
+
+            const uzsakymasID = uzsakymasData[0].uzsakymasID;
+
+            console.log("uzsakymas id", uzsakymasID)
+
+            const response = await fetch('http://localhost:5031/Uzsakymas/AddKrepselioPreke', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    Kiekis: 1, 
+                    FKPatiekalasID: patiekalasId,
+                    FKUzsakymasID: uzsakymasID, 
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const newKrepselioPreke = await response.json();
+            console.log('Added to Basket:', newKrepselioPreke);
+        } catch (error) {
+            console.error('Error adding to Basket:', error);
+        }
+    };
+
     const deletePatiekalas = async (id) => {
         try {
             const response = await fetch(`http://localhost:5031/api/patiekalas/${id}`, {
@@ -144,7 +179,9 @@ export default function Restoranai() {
 
                                     </CardContent>
                                     <CardActions>
-                                        <Button size="small">Įdėti į krepšelį</Button>
+                                        <Button size="small" onClick={() => addToBasket(patiekalas.patiekalasID)}>
+                                            Įdėti į krepšelį
+                                        </Button>
                                         <Button disabled style={{ color: '#ffa726' }} size="small">{patiekalas.kaina} €</Button>
                                         <Button align="right" size="small" onClick={() => deletePatiekalas(patiekalas.patiekalasID)}> Pašalinti </Button>
                                         <Button align="right"

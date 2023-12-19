@@ -11,7 +11,9 @@ namespace WarehelperAPI.Data
 		private readonly IConfiguration configuration;
 		public DbSet<Patiekalas> patiekalas { get; set; }
 		public DbSet<Restoranas> restoranas { get; set; }
-		public DbSet<Restoranas> krepselio_Preke { get; set; }
+		public DbSet<KrepselioPreke> krepselio_Preke { get; set; }
+		public DbSet<Uzsakymas> uzsakymas { get; set; }
+		public DbSet<Krepselis> krepselis { get; set; }
 
 		public MoltDbContext(IConfiguration configuration)
 		{
@@ -20,7 +22,7 @@ namespace WarehelperAPI.Data
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseMySQL("Server=localhost;Database=ispdb;User Id=root;Password=test;Convert Zero Datetime=True;");
+			optionsBuilder.UseMySQL("Server=localhost;Database=isp;User Id=root;Password=test;Convert Zero Datetime=True;");
 		}
 	}
 }
