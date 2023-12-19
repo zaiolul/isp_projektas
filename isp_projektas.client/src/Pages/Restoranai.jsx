@@ -10,10 +10,12 @@ import Navbar from '../navbar.jsx';
 import CardActions from '@mui/material/CardActions';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf';
+
 export default function Restoranai() {
     const { restoranasId } = useParams();
     const [patiekalai, setPatiekalai] = useState([]);
     const [restoranas, setRestoranas] = useState(null);
+
 
     //Uzsakymo id reikia pasiimti
     const addToBasket = async (patiekalasId) => {
@@ -49,6 +51,9 @@ export default function Restoranai() {
         }
     };
 
+
+    const [kategorijos, setKategorijos] = useState(null);
+
     const deletePatiekalas = async (id) => {
         try {
             const response = await fetch(`http://localhost:5031/api/patiekalas/${id}`, {
@@ -62,8 +67,6 @@ export default function Restoranai() {
             const deletedPatiekalas = await response.json();
             console.log('Deleted Patiekalas:', deletedPatiekalas);
 
-            // After deletion, you might want to refresh the list of patiekalai
-            // For simplicity, let's refetch the list
             const updatedPatiekalaiResponse = await fetch(`http://localhost:5031/api/patiekalas/byRestoranas/${restoranasId}`);
             if (updatedPatiekalaiResponse.ok) {
                 const updatedPatiekalaiData = await updatedPatiekalaiResponse.json();
@@ -87,6 +90,16 @@ export default function Restoranai() {
             setPatiekalai(patiekalaiData);
         };
 
+        const fetchKategorijos = async () => {
+            const kategorijosResponse = await fetch(`http://localhost:5031/api/restoranas//${restoranasId}/kategorijos`);
+            if (!kategorijosResponse.ok) {
+                throw new Error(`HTTP error! Status: ${kategorijosResponse.status}`);
+            }
+
+            const kategorijosData = await patiekalaiResponse.json();
+            setPatiekalai(kategorijosData);
+        };
+
         const fetchRestoranas = async () => {
             const restoranasResponse = await fetch(`http://localhost:5031/api/restoranas/${restoranasId}`);
             if (!restoranasResponse.ok) {
@@ -107,7 +120,7 @@ export default function Restoranai() {
             <Navbar>
                 <Outlet />
             </Navbar>
-            {restoranas  && patiekalai ? (
+            {restoranas && patiekalai ? (
                 <div>
                     <h1></h1>
                     <Card sx={{ maxWidth: 800, margin: 'auto', marginTop: 5 }}>
@@ -118,7 +131,7 @@ export default function Restoranai() {
 
                             </Typography>
                             <Typography variant="subtitle1" color="text.secondary">
-                                {restoranas.miestas}, {restoranas.adresas }
+                                {restoranas.miestas}, {restoranas.adresas}
                             </Typography>
                             <Typography variant="subtitle1" color="text.secondary">
                                 {restoranas.aprasymas}

@@ -46,7 +46,8 @@ namespace ISP_PROJEKTAS.Server.Models
 		[Column("brangumas")]
 		public int Brangumas { get; set; }
 
-		//[Column("fk_Restorano_valdytojasid_Naudotojas")]
-		//public int FKRestoranoValdytojasId { get; set; }
+		[Column("fk_Restorano_valdytojasid_Naudotojas")]
+		public int IdValdytojas { get; set; }
+
 	}
 }

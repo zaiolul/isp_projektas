@@ -12,10 +12,13 @@ namespace WarehelperAPI.Data
 		public DbSet<Patiekalas> patiekalas { get; set; }
 		public DbSet<Restoranas> restoranas { get; set; }
 		public DbSet<KrepselioPreke> krepselio_Preke { get; set; }
-		public DbSet<Uzsakymas> uzsakymas { get; set; }
-		public DbSet<Krepselis> krepselis { get; set; }
 
-		public MoltDbContext(IConfiguration configuration)
+		public DbSet<Krepselis> krepselis { get; set; }
+		public DbSet<Uzsakymas> uzsakymas { get; set; }
+        public DbSet<RestoranoKategorija> restorano_Kategorija { get; set; }
+        public DbSet<Kategorija> kategorija { get; set; }
+
+        public MoltDbContext(IConfiguration configuration)
 		{
 			this.configuration = configuration;
 		}
