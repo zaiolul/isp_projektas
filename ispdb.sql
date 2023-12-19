@@ -32,7 +32,7 @@ CREATE TABLE Naudotojas
 	miestas varchar (255),
 	registravimo_data datetime,
 	tel_numeris varchar (255),
-	id_Naudotojas integer,
+	id_Naudotojas integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id_Naudotojas)
 );
 
@@ -40,13 +40,13 @@ CREATE TABLE Priedas
 (
 	pavadinimas varchar (255),
 	kaina varchar (255),
-	id_Priedas integer,
+	id_Priedas integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id_Priedas)
 );
 
 CREATE TABLE Alergenai
 (
-	id_Alergenai integer,
+	id_Alergenai integer NOT NULL AUTO_INCREMENT,
 	pavadinimas char (12) NOT NULL,
 	PRIMARY KEY(id_Alergenai)
 );
@@ -58,8 +58,8 @@ INSERT INTO Alergenai(id_Alergenai, pavadinimas) VALUES(5, 'kiaušiniai');
 
 CREATE TABLE Apmokejimo_budas
 (
-	id_Apmokejimo_budas integer,
-	pavadinimas char (7) NOT NULL,
+	id_Apmokejimo_budas integer NOT NULL AUTO_INCREMENT,
+	pavadinimas char (7) ,
 	PRIMARY KEY(id_Apmokejimo_budas)
 );
 INSERT INTO Apmokejimo_budas(id_Apmokejimo_budas, pavadinimas) VALUES(1, 'grynais');
@@ -98,7 +98,7 @@ INSERT INTO Kaina(id_Kaina, pavadinimas) VALUES(3, 'aukšta');
 CREATE TABLE Restorano_kategorija
 (
 	id_Restorano_kategorija integer,
-	pavadinimas char (14) NOT NULL,
+	pavadinimas char (14) NOT NULL ,
 	PRIMARY KEY(id_Restorano_kategorija)
 );
 INSERT INTO Restorano_kategorija(id_Restorano_kategorija, pavadinimas) VALUES(1, 'Suši');
@@ -111,14 +111,14 @@ INSERT INTO Restorano_kategorija(id_Restorano_kategorija, pavadinimas) VALUES(7,
 
 CREATE TABLE Administratorius
 (
-	id_Naudotojas integer,
+	id_Naudotojas integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id_Naudotojas),
 	FOREIGN KEY(id_Naudotojas) REFERENCES Naudotojas (id_Naudotojas)
 );
 
 CREATE TABLE Klientas
 (
-	id_Naudotojas integer,
+	id_Naudotojas integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id_Naudotojas),
 	FOREIGN KEY(id_Naudotojas) REFERENCES Naudotojas (id_Naudotojas)
 );
@@ -126,7 +126,7 @@ CREATE TABLE Klientas
 CREATE TABLE Restorano_valdytojas
 (
 	verslo_registracijos_numeris varchar (255),
-	id_Naudotojas integer,
+	id_Naudotojas integer NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(id_Naudotojas),
 	FOREIGN KEY(id_Naudotojas) REFERENCES Naudotojas (id_Naudotojas)
 );
@@ -140,12 +140,12 @@ CREATE TABLE Restoranas
 	uzsakymo_mokestis float,
 	aprasymas varchar (255),
 	tel_numeris varchar (255),
-	atidarymo_laikas datetime,
-	uzdarymo_laikas datetime,
+	atidarymo_laikas varchar(255),
+	uzdarymo_laikas varchar(255),
 	minimali_uzsakymo_kaina float,
 	nuotrauka varchar (255),
 	brangumas integer,
-	id_Restoranas integer,
+	id_Restoranas integer NOT NULL AUTO_INCREMENT,
 	fk_Restorano_valdytojasid_Naudotojas integer NOT NULL,
 	PRIMARY KEY(id_Restoranas),
 	FOREIGN KEY(brangumas) REFERENCES Kaina (id_Kaina),
@@ -158,9 +158,9 @@ CREATE TABLE Uzsakymas
 	sumoketa boolean,
 	pilna_kaina float,
 	apmokejimo_budas integer,
-	id_Uzsakymas integer,
+	id_Uzsakymas integer NOT NULL AUTO_INCREMENT,
 	fk_Klientasid_Naudotojas integer NOT NULL,
-	PRIMARY KEY(id_Uzsakymas),
+	PRIMARY KEY(id_Uzsakymas) ,
 	FOREIGN KEY(apmokejimo_budas) REFERENCES Apmokejimo_budas (id_Apmokejimo_budas),
 	CONSTRAINT sudaro FOREIGN KEY(fk_Klientasid_Naudotojas) REFERENCES Klientas (id_Naudotojas)
 );
@@ -170,7 +170,7 @@ CREATE TABLE Uzsakymo_adresas
 	miestas varchar (255),
 	adresas varchar (255),
 	zinute varchar (255),
-	id_Uzsakymo_adresas integer,
+	id_Uzsakymo_adresas integer NOT NULL AUTO_INCREMENT,
 	fk_Klientasid_Naudotojas integer NOT NULL,
 	PRIMARY KEY(id_Uzsakymo_adresas),
 	CONSTRAINT nustato FOREIGN KEY(fk_Klientasid_Naudotojas) REFERENCES Klientas (id_Naudotojas)
@@ -179,7 +179,7 @@ CREATE TABLE Uzsakymo_adresas
 CREATE TABLE Kategorija
 (
 	kategorija integer,
-	id_Kategorija integer,
+	id_Kategorija integer NOT NULL AUTO_INCREMENT,
 	fk_Restoranasid_Restoranas integer NOT NULL,
 	PRIMARY KEY(id_Kategorija),
 	FOREIGN KEY(kategorija) REFERENCES Restorano_kategorija (id_Restorano_kategorija),
@@ -188,7 +188,7 @@ CREATE TABLE Kategorija
 
 CREATE TABLE Krepselis
 (
-	id_Krepselis integer,
+	id_Krepselis integer NOT NULL AUTO_INCREMENT,
 	fk_Uzsakymasid_Uzsakymas integer NOT NULL,
 	PRIMARY KEY(id_Krepselis),
 	UNIQUE(fk_Uzsakymasid_Uzsakymas),
@@ -204,7 +204,7 @@ CREATE TABLE Patiekalas
 	aprasymas varchar (255),
 	tinka_veganams boolean,
 	astrumas integer,
-	id_Patiekalas integer,
+	id_Patiekalas integer NOT NULL AUTO_INCREMENT,
 	fk_Restoranasid_Restoranas integer NOT NULL,
 	PRIMARY KEY(id_Patiekalas),
 	FOREIGN KEY(astrumas) REFERENCES Astrumas (id_Astrumas),
@@ -214,7 +214,7 @@ CREATE TABLE Patiekalas
 CREATE TABLE Alergenas
 (
 	pavadinimas varchar (255),
-	id_Alergenas integer,
+	id_Alergenas integer NOT NULL AUTO_INCREMENT,
 	fk_Patiekalasid_Patiekalas integer NOT NULL,
 	PRIMARY KEY(id_Alergenas),
 	CONSTRAINT turi3 FOREIGN KEY(fk_Patiekalasid_Patiekalas) REFERENCES Patiekalas (id_Patiekalas)
@@ -223,7 +223,7 @@ CREATE TABLE Alergenas
 CREATE TABLE Ingredientas
 (
 	pavadinimas varchar (255),
-	id_Ingredientas integer,
+	id_Ingredientas integer NOT NULL AUTO_INCREMENT,
 	fk_Patiekalasid_Patiekalas integer NOT NULL,
 	PRIMARY KEY(id_Ingredientas),
 	CONSTRAINT sudaro1 FOREIGN KEY(fk_Patiekalasid_Patiekalas) REFERENCES Patiekalas (id_Patiekalas)
@@ -232,7 +232,7 @@ CREATE TABLE Ingredientas
 CREATE TABLE Krepselio_preke
 (
 	kiekis integer,
-	id_Krepselio_preke integer,
+	id_Krepselio_preke integer NOT NULL AUTO_INCREMENT,
 	fk_Patiekalasid_Patiekalas integer NOT NULL,
 	fk_Uzsakymasid_Uzsakymas integer NOT NULL,
 	PRIMARY KEY(id_Krepselio_preke),
@@ -243,7 +243,7 @@ CREATE TABLE Krepselio_preke
 CREATE TABLE Patiekalo_priedas
 (
 	kiekis integer,
-	id_Patiekalo_priedas integer,
+	id_Patiekalo_priedas integer NOT NULL AUTO_INCREMENT,
 	fk_Patiekalasid_Patiekalas integer NOT NULL,
 	fk_Priedasid_Priedas integer NOT NULL,
 	PRIMARY KEY(id_Patiekalo_priedas),

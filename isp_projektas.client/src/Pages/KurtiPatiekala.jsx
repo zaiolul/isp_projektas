@@ -26,7 +26,18 @@ const CreateForm = () => {
             [name]: value,
         }));
     };
+    let map;
 
+async function initMap() {
+  const { Map } = await google.maps.importLibrary("maps");
+
+  map = new Map(document.getElementById("map"), {
+    center: { lat: -34.397, lng: 150.644 },
+    zoom: 8,
+  });
+}
+
+initMap();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -177,6 +188,7 @@ const CreateForm = () => {
                                     value={newPatiekalas.astrumas}
                                     label="Aštrumas"
                                     onChange={handleInputChange}
+
 
                                 >
                                     <MenuItem value={1}>Neaštru</MenuItem>

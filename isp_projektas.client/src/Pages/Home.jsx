@@ -10,6 +10,15 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 function LinksHome() {
     const [restoranai, setRestoranai] = useState([]);
+    async function fetchKategorijos(id)  {
+        const kategorijosResponse = await fetch(`http://localhost:5031/api/restoranas//${id}/kategorijos`);
+        if (!kategorijosResponse.ok) {
+            throw new Error(`HTTP error! Status: ${kategorijosResponse.status}`);
+        }
+
+        const kategorijosData = await patiekalaiResponse.json();
+        setPatiekalai(kategorijosData);
+    };
 
     useEffect(() => {
         const fetchRestoranai = async () => {
@@ -18,7 +27,9 @@ function LinksHome() {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
+               
                 const data = await response.json();
+                //fetchKategorijos(data);
                 setRestoranai(data);
             } catch (error) {
                 console.error('Error fetching data:', error);

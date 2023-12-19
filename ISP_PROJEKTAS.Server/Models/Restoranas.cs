@@ -32,10 +32,10 @@ namespace ISP_PROJEKTAS.Server.Models
 		public string TelNumeris { get; set; }
 
 		[Column("atidarymo_laikas")]
-		public DateTime AtidarymoLaikas { get; set; }
+		public string AtidarymoLaikas { get; set; }
 
 		[Column("uzdarymo_laikas")]
-		public DateTime UzdarymoLaikas { get; set; }
+		public string UzdarymoLaikas { get; set; }
 
 		[Column("minimali_uzsakymo_kaina")]
 		public float MinimaliUzsakymoKaina { get; set; }
@@ -46,7 +46,8 @@ namespace ISP_PROJEKTAS.Server.Models
 		[Column("brangumas")]
 		public int Brangumas { get; set; }
 
-		//[Column("fk_Restorano_valdytojasid_Naudotojas")]
-		//public int FKRestoranoValdytojasId { get; set; }
+		[Column("fk_Restorano_valdytojasid_Naudotojas")]
+		public int IdValdytojas { get; set; }
+
 	}
 }
