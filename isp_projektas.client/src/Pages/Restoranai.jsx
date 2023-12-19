@@ -10,6 +10,7 @@ import Navbar from '../navbar.jsx';
 import CardActions from '@mui/material/CardActions';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf';
+
 export default function Restoranai() {
     const { restoranasId } = useParams();
     const [patiekalai, setPatiekalai] = useState([]);
@@ -72,7 +73,7 @@ export default function Restoranai() {
             <Navbar>
                 <Outlet />
             </Navbar>
-            {restoranas  && patiekalai ? (
+            {restoranas && patiekalai ? (
                 <div>
                     <h1></h1>
                     <Card sx={{ maxWidth: 800, margin: 'auto', marginTop: 5 }}>
@@ -83,7 +84,7 @@ export default function Restoranai() {
 
                             </Typography>
                             <Typography variant="subtitle1" color="text.secondary">
-                                {restoranas.miestas}, {restoranas.adresas }
+                                {restoranas.miestas}, {restoranas.adresas}
                             </Typography>
                             <Typography variant="subtitle1" color="text.secondary">
                                 {restoranas.aprasymas}
