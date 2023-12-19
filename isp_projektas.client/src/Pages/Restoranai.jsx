@@ -15,6 +15,7 @@ export default function Restoranai() {
     const { restoranasId } = useParams();
     const [patiekalai, setPatiekalai] = useState([]);
     const [restoranas, setRestoranas] = useState(null);
+    const [kategorijos, setKategorijos] = useState(null);
     const deletePatiekalas = async (id) => {
         try {
             const response = await fetch(`http://localhost:5031/api/patiekalas/${id}`, {
@@ -28,8 +29,6 @@ export default function Restoranai() {
             const deletedPatiekalas = await response.json();
             console.log('Deleted Patiekalas:', deletedPatiekalas);
 
-            // After deletion, you might want to refresh the list of patiekalai
-            // For simplicity, let's refetch the list
             const updatedPatiekalaiResponse = await fetch(`http://localhost:5031/api/patiekalas/byRestoranas/${restoranasId}`);
             if (updatedPatiekalaiResponse.ok) {
                 const updatedPatiekalaiData = await updatedPatiekalaiResponse.json();
@@ -51,6 +50,16 @@ export default function Restoranai() {
 
             const patiekalaiData = await patiekalaiResponse.json();
             setPatiekalai(patiekalaiData);
+        };
+
+        const fetchKategorijos = async () => {
+            const kategorijosResponse = await fetch(`http://localhost:5031/api/restoranas//${restoranasId}/kategorijos`);
+            if (!kategorijosResponse.ok) {
+                throw new Error(`HTTP error! Status: ${kategorijosResponse.status}`);
+            }
+
+            const kategorijosData = await patiekalaiResponse.json();
+            setPatiekalai(kategorijosData);
         };
 
         const fetchRestoranas = async () => {
