@@ -20,6 +20,7 @@ namespace WarehelperAPI.Data
 		public DbSet<Uzsakymas> uzsakymas { get; set; }
 		public DbSet<RestoranoKategorija> restorano_Kategorija { get; set; }
 		public DbSet<Kategorija> kategorija { get; set; }
+		public DbSet<Naudotojas> naudotojas { get; set; }
 
 		public MoltDbContext(IConfiguration configuration)
 		{

@@ -5,30 +5,65 @@ import Navbar from '../navbar.jsx';
 
 function Naudotojas() {
 
-    const [naudotojasgot, setNaudotojas] = useState(null);
+    const [naudotojas, setNaudotojas] = useState(null);
+    const [editableNaudotojas, setEditableNaudotojas] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
 
 
-    useEffect(() => {
-        fetchNaudotojas();
-    }, []);
+    
+    const handleEditClick = () => {
+        setIsEditing(true);
+    };
 
-    const fetchNaudotojas = async () => {
+    const handleSaveClick = async () => {
         try {
+            console.log("updating user");
             const klientasID = 1;
-            const response = await fetch(`http://localhost:5031/Naudotojas/GetUserData/${klientasID}`);
-            const data = await response.json();
-            console.log(data);
-            setNaudotojas(data);
-
+            await fetch(`http://localhost:5031/Naudotojas/UpdateUserData/${klientasID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(editableNaudotojas),
+            });
+            setIsEditing(false);
         } catch (error) {
-            console.error('Error fetching Uzsakymai:', error);
+            console.error('Error updating Naudotojas:', error);
         }
     };
 
-    
+    const handleCancelClick = () => {
+        setEditableNaudotojas(naudotojas);
+        setIsEditing(false);
+    };
+
+    const handleInputChange = (e) => {
+        setEditableNaudotojas({
+            ...editableNaudotojas,
+            [e.target.name]: e.target.value,
+        });
+    };
 
 
+    useEffect(() => {
+        console.log("hi");
+        const fetchNaudotojas = async () => {
+            try {
+                const klientasID = 1;
+                const response = await fetch(`http://localhost:5031/Naudotojas/GetUserData/${klientasID}`);
+                const data = await response.json();
+                console.log(data);
+                setNaudotojas(data);
+                setEditableNaudotojas(data);
 
+            } catch (error) {
+                console.error('Error fetching Uzsakymai:', error);
+            }
+        };
+
+       
+        fetchNaudotojas();
+    }, []);
 
     return (
         <div>
@@ -37,35 +72,68 @@ function Naudotojas() {
                 <Outlet />
             </Navbar>
 
-            <Button>
-                <Link to="/home">Pagrindinis</Link>
-                <Outlet />
-            </Button>
-            <Button>
-                <Link to="/prisijungimas">Atsijungti</Link>
-                <Outlet />
-            </Button>
-            <Button color="inherit" component={Link} to={'/administratorius'}>Administratoriaus</Button>
-            <Button color="inherit" component={Link} to={'/uzsakymuIstorija'}>Užsakymų istorija</Button>
+            {isEditing ? (
+                <div>
+                    <Button onClick={handleSaveClick}>Save</Button>
+                    <Button onClick={handleCancelClick}>Cancel</Button>
+                </div>
+            ) : (
+                <Button onClick={handleEditClick}>Edit</Button>
+            )}
 
+            
             <div>
-                <h1>Naudotojas Details</h1>
-                {naudotojasgot ? (
+                <h1>Naudotojas Informacija</h1>
+                {isEditing ? (
                     <div>
-                        <p><strong>Slapyvardis:</strong> {naudotojasgot.slapyvardis}</p>
-                        <p><strong>Vardas:</strong> {naudotojasgot.vardas}</p>
-                        <p><strong>Pavardė:</strong> {naudotojasgot.pavarde}</p>
-                        <p><strong>El. Paštas:</strong> {naudotojasgot.elPastas}</p>
-                        <p><strong>Gimimo Data:</strong> {new Date(naudotojasgot.gimimoData).toLocaleDateString()}</p>
-                        <p><strong>Registravimo Data:</strong> {new Date(naudotojasgot.registravimoData).toLocaleString()}</p>
-                        <p><strong>Miestas:</strong> {naudotojasgot.miestas}</p>
-                        <p><strong>Tel. Numeris:</strong> {naudotojasgot.telNumeris}</p>
+                        
+                       <p> <input
+                            type="text"
+                            name="slapyvardis"
+                            value={editableNaudotojas.slapyvardis}
+                            onChange={handleInputChange}
+                        /></p>
+                        <p><input
+                            type="text"
+                            name="elPastas"
+                            value={editableNaudotojas.elPastas}
+                            onChange={handleInputChange}
+                        /></p>
+                        <p><input
+                            type="text"
+                            name="Miestas"
+                            value={editableNaudotojas.miestas}
+                            onChange={handleInputChange}
+                        /></p>
+                        <p><input
+                            type="text"
+                            name="telnumeris"
+                            value={editableNaudotojas.telNumeris}
+                            onChange={handleInputChange}
+                        /></p>
+                        
                     </div>
                 ) : (
-                    <p>Loading...</p>
+                    naudotojas ? (
+                        <div>
+                            
+                            <p><strong>Slapyvardis:</strong> {naudotojas.slapyvardis}</p>
+                            <p><strong>El. Pastas:</strong> {naudotojas.elPastas}</p>
+                            <p><strong>Vardas:</strong> {naudotojas.vardas}</p>
+                                <p><strong>Pavarde:</strong> {naudotojas.pavarde}</p>
+                                <p><strong>Miestas:</strong> {naudotojas.miestas}</p>
+                                <p><strong>Tel. numeris:</strong> {naudotojas.telNumeris}</p>
+
+
+
+                        </div>
+                    ) : (
+                        <p>Loading...</p>
+                    )
                 )}
             </div>
         </div>
     );
 }
+
 export default Naudotojas;
