@@ -8,78 +8,83 @@ import { TextField, Button, Container, Box, InputLabel, MenuItem, Input, Typogra
 import { Select, FormControl } from "@mui/material";
 import API_URL from "../utils/API.js";
 
-// import {
-//     setKey,
-//     setDefaults,
-//     setLanguage,
-//     setRegion,
-//     fromAddress,
-//     fromLatLng,
-//     fromPlaceId,
-//     setLocationType,
-//     geocode,
-//     RequestType,
-// } from "react-geocode";
-// import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+
+import {
+    setKey,
+    setDefaults,
+    setLanguage,
+    setRegion,
+    fromAddress,
+    fromLatLng,
+    fromPlaceId,
+    setLocationType,
+    geocode,
+    RequestType,
+} from "react-geocode";
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+
+import {
+    APIProvider,
+    Map,
+    InfoWindow,
+  } from "@vis.gl/react-google-maps";
+  
 
 
 
-// function MapComp() {
 
-//     const containerStyle = {
-//         width: '800px',
-//         height: '800px'
-//     };
+function MapComp() {
 
-//     const { isLoaded } = useJsApiLoader({
-//         id: 'google-map-script',
-//         googleMapsApiKey: "AIzaSyDSblczDOlYVyG9JxSVVo2og0-mDeqX9Vc"
-//     })
+    const containerStyle = {
+        width: '800px',
+        height: '800px'
+    };
 
-//     const [map, setMap] = useState(null)
-//     const [center, setCenter] = useState({lat:0, lng:0});
+    
 
-//     const onLoad = useCallback(function callback(map) {
-//         setDefaults({
-//             key: "AIzaSyDSblczDOlYVyG9JxSVVo2og0-mDeqX9Vc", // Your API key here.
-//             language: "en", // Default language for responses.
-//             region: "lt", // Default region for responses.
-//         });
+    const [map, setMap] = useState(null)
+    const [center, setCenter] = useState({lat:0, lng:0});
 
-//         fromAddress("Kauno technologijos universitetas, Informatikos fakultetas")
-//             .then(({ results }) => {
-//               let val = results[0].geometry.location;
-//               setCenter(val)
-//             })
+    const onLoad = useCallback(function callback(map) {
+        setDefaults({
+            key: "AIzaSyDSblczDOlYVyG9JxSVVo2og0-mDeqX9Vc", // Your API key here.
+            language: "en", // Default language for responses.
+            region: "lt", // Default region for responses.
+        });
+
+        fromAddress("lietuva")
+            .then(({ results }) => {
+              let val = results[0].geometry.location;
+              setCenter(val)
+            })
 
 
-//             console.log(center)
-//         const bounds = new window.google.maps.LatLngBounds(center);
-//         map.fitBounds(bounds);
+            console.log(center)
+        const bounds = new window.google.maps.LatLngBounds(center);
+        map.fitBounds(bounds);
 
-//         setMap(map)
-//     }, [])
+        setMap(map)
+    }, [])
 
-//     const onUnmount = useCallback(function callback(map) {
-//         setMap(null)
-//     }, [])
+    const onUnmount = useCallback(function callback(map) {
+        setMap(null)
+    }, [])
 
 
 
-//     return isLoaded ? (
-//         <GoogleMap
-//             mapContainerStyle={containerStyle}
-//             center={center}
-//             zoom={5}
-//             onLoad={onLoad}
-//             onUnmount={onUnmount}
-//         >
-//             { /* Child components, such as markers, info windows, etc. */}
-//             <></>
-//         </GoogleMap>
-//     ) : <></>
-// }
-
+    return isLoaded ? (
+        <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={center}
+            zoom={5}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
+        >
+            { /* Child components, such as markers, info windows, etc. */}
+            <></>
+        </GoogleMap>
+    ) : <></>
+}
 
 function kurtiRestorana() {
 
@@ -143,21 +148,21 @@ function kurtiRestorana() {
 
             const res = await response.json();
 
-            console.log('New restaurant created:', res);
-            navigate(-1);
+            console.log(res.restoranasID);
+            navigate("/restoranas/" + res.restoranasID)
         } catch (error) {
             console.error('Error creating new restaurant:', error);
         }
     };
     return (
         <div>
-
+            
             <Navbar>
                 <h1>Kurti Restoraną</h1>
                 <Outlet />
             </Navbar>
 
-
+           
             <Button>
                 <Link to="/home">Pagrindinis puslapis</Link>
                 <Outlet />

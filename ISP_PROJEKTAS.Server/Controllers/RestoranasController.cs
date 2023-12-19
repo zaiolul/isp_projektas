@@ -20,13 +20,9 @@ namespace ISP_PROJEKTAS.Server.Controllers
 		[HttpGet]
 		public ActionResult<IEnumerable<Restoranas>> Get()
 		{
-			var restoranaiFromDb = _context.restoranas.ToList();
-
-			if(restoranaiFromDb == null)
-				return NotFound(); 
-
-			Console.WriteLine("GET", restoranaiFromDb.Count());
-			List<Restoranas> restoranai = restoranaiFromDb.Select(restoranas => new Restoranas
+			
+		
+			IEnumerable<Restoranas> restoranai = _context.restoranas.Select(restoranas => new Restoranas
 			{
 				Pavadinimas = restoranas.Pavadinimas,
 				Miestas = restoranas.Miestas,
@@ -42,7 +38,7 @@ namespace ISP_PROJEKTAS.Server.Controllers
 				Brangumas = restoranas.Brangumas,
 				RestoranasID = restoranas.RestoranasID,
 
-			}).ToList();
+			});
 
 			return Ok(restoranai);
 		}
@@ -150,6 +146,25 @@ namespace ISP_PROJEKTAS.Server.Controllers
 
 
             return Ok(names);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRestoranas(int id)
+        {
+			Console.WriteLine(id);
+            var toDelete = await _context.restoranas.FindAsync(id);
+
+            if (toDelete == null)
+            {
+                return NotFound();
+            }
+			List<Kategorija> kategorijos = _context.kategorija.Where((x) => x.Fk_Restoranasid_Restoranas == id).ToList();
+			_context.kategorija.RemoveRange(kategorijos);
+            await _context.SaveChangesAsync();
+            _context.restoranas.Remove(toDelete);
+            await _context.SaveChangesAsync();
+
+            return Ok(toDelete);
         }
     }
 }

@@ -52,6 +52,7 @@ const CreateForm = () => {
 
         fetchIngredientai();
     }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 

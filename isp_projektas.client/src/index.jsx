@@ -37,7 +37,7 @@ root.render(
           <Route path="/naudotojas" element={<Naudotojas />} />
           <Route path="/prisijungimas" element={<Prisijungimas />} />
           <Route path="/redaguotiPatiekala/:id" element={<RedaguotiPatiekala />} />
-          <Route path="/redaguotiRestorana" element={<RedaguotiRestorana />} />
+          <Route path="/redaguotiRestorana/:restoranasId" element={<RedaguotiRestorana />} />
           <Route path="/registracija" element={<Registracija />} />
           <Route path="/restoranas/:restoranasId" element={<Restoranai />} />
           <Route path="/uzsakymuIstorija" element={<UzsakymuIstorija />} />
