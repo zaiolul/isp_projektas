@@ -2,11 +2,13 @@ import { Outlet, Link } from "react-router-dom";
 import Navbar from '../navbar.jsx';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, } from 'react-router-dom';
-import { TextField, Button, Container, Box, Alert, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
+import { TextField, Button, Container, Box, Alert, InputLabel, Select, MenuItem, FormControl, Typography} from '@mui/material';
 
 
 const CreateForm = () => {
     const navigate = useNavigate();
+    const [ingredientai, setingredientai] = useState([]);
+    const [Pingredientai, Psetingredientai] = useState([]);
     const { restoranasId } = useParams();
     const [newPatiekalas, setNewPatiekalas] = useState({
         pavadinimas: '',
@@ -18,6 +20,13 @@ const CreateForm = () => {
         astrumas: 0,
         fkRestoranasID: restoranasId,
     });
+    function addCategory(event) {
+        const selectedValue = event.target.value;
+        if (!Pingredientai.some(item => item.id_Ingredientas === selectedValue.id_Ingredientas)) {
+           
+            Psetingredientai(prevIngredients => [...prevIngredients, selectedValue]);
+        }
+    }
     const [showAlert, setShowAlert] = useState(false);
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -26,18 +35,23 @@ const CreateForm = () => {
             [name]: value,
         }));
     };
-    let map;
+    useEffect(() => {
+        const fetchIngredientai = async () => {
+            try {
+                const response = await fetch('http://localhost:5031/api/patiekalas/ingredientai');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
 
-async function initMap() {
-  const { Map } = await google.maps.importLibrary("maps");
+                const data = await response.json();
+                setingredientai(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
 
-  map = new Map(document.getElementById("map"), {
-    center: { lat: -34.397, lng: 150.644 },
-    zoom: 8,
-  });
-}
-
-initMap();
+        fetchIngredientai();
+    }, []);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -47,7 +61,7 @@ initMap();
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(newPatiekalas),
+                body: JSON.stringify({ patiekalas: newPatiekalas, ingredientai: Pingredientai })
             });
 
             if (!response.ok) {
@@ -109,7 +123,7 @@ initMap();
                                 value={newPatiekalas.kaina}
                                 type="number"
                                 inputProps={{
-                                    step: 'any', 
+                                    step: 'any',
                                 }}
                                 onChange={handleInputChange}
                             />
@@ -172,7 +186,7 @@ initMap();
                                     value={newPatiekalas.tinkaVeganams}
                                     label="Tinka veganams"
                                     onChange={handleInputChange}
-                                   
+
                                 >
                                     <MenuItem value={0}>Netinka</MenuItem>)
                                     <MenuItem value={1}>Tinka</MenuItem>)
@@ -189,14 +203,39 @@ initMap();
                                     label="Aštrumas"
                                     onChange={handleInputChange}
 
-
                                 >
                                     <MenuItem value={1}>Neaštru</MenuItem>
                                     <MenuItem value={2}>Aštru</MenuItem>
                                     <MenuItem value={3}>Labai aštru</MenuItem>
                                 </Select>
                             </FormControl>
-                          
+                            <FormControl variant="standard" sx={{ m: 1, minWidth: "30ch" }}>
+                                <InputLabel id="ingredientas">Pridėti ingredientą</InputLabel>
+                                <Select
+                                    required
+                                    name="ingredientas"
+                                    id="ingredientas"
+                                    label="Kainų lygis"
+                                    onChange={addCategory}
+                                    helperText={Pingredientai.length === 0 ? "Laukas negali būti tuščias" : ""}
+                                >
+                                    {ingredientai.map((kat) => (
+                                        <MenuItem key={kat.id_Ingredientas} value={kat}>
+                                            {kat.pavadinimas}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                {Pingredientai.length > 0 && (
+                                    <Typography align="right" variant="body2">
+                                        Pasirinktos kategorijos:
+                                        {Pingredientai.map((kat) => (
+                                            <Typography key={kat.id_Ingredientas} align="right" variant="body2" color="text.secondary">
+                                                {kat.pavadinimas}
+                                            </Typography>
+                                        ))}
+                                    </Typography>
+                                )}
+                            </FormControl>
                         </div>
                         <div>
                             <Button sx={{ width: '33ch', m: '1ch' }} variant="contained" type="submit">

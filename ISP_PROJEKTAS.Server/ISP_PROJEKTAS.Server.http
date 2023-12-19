@@ -5,3 +5,6 @@ Accept: application/json
 ###
 GET {{ISP_PROJEKTAS.Server_HostAddress}}/api/restoranas/2
 Accept: application/json
+###
+GET {{ISP_PROJEKTAS.Server_HostAddress}}/api/patiekalas/ingredientai
+Accept: application/json

@@ -1,6 +1,8 @@
 ﻿using ISP_PROJEKTAS.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using WarehelperAPI.Data;
 
 namespace ISP_PROJEKTAS.Server.Controllers
@@ -66,9 +68,11 @@ namespace ISP_PROJEKTAS.Server.Controllers
 			return NoContent();
 		}
 		[HttpPost]
-		public async Task<IActionResult> CreatePatiekalas([FromBody] Patiekalas patiekalasViewModel)
+		public async Task<IActionResult> CreatePatiekalas([FromBody] JObject data)
 		{
-			Console.WriteLine($"Received data:", patiekalasViewModel.Aprasymas);
+			Console.WriteLine(data);
+			Patiekalas patiekalasViewModel = data["patiekalas"].ToObject<Patiekalas>();
+			List<Ingredientai> ingredientaiId = JsonConvert.DeserializeObject<List<Ingredientai>>(data["ingredientai"].ToString());
 			if (patiekalasViewModel == null)
 			{
 				return BadRequest("Invalid patiekalas data");
@@ -88,9 +92,18 @@ namespace ISP_PROJEKTAS.Server.Controllers
 
 			_context.patiekalas.Add(newPatiekalas);
 			await _context.SaveChangesAsync();
-
+			int id = newPatiekalas.PatiekalasID;
+			List<Ingredientas> list = new List<Ingredientas>();
+			foreach (var item in ingredientaiId)
+			{
+				Console.WriteLine(item.pavadinimas);
+				list.Add(new Ingredientas { pavadinimas = item.pavadinimas, Fk_Patiekalasid = id });
+			}
+			_context.ingredientas.AddRange(list);
+			await _context.SaveChangesAsync();
 			return Ok(newPatiekalas);
 		}
+		
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeletePatiekalas(int id)
 		{
@@ -109,6 +122,23 @@ namespace ISP_PROJEKTAS.Server.Controllers
 		private bool PatiekalasExists(int id)
 		{
 			return _context.patiekalas.Any(e => e.PatiekalasID == id);
+		}
+		[HttpGet("ingredientai")]
+		public ActionResult<IEnumerable<Ingredientai>> GetIngredientai()
+		{
+			Console.WriteLine("kazkas");
+			var ingredientai = _context.ingredientai
+				.ToList();
+			Console.WriteLine("kazkas", ingredientai);
+			List<Ingredientai> restoranai = ingredientai.Select(restoranas => new Ingredientai
+			{
+				pavadinimas = restoranas.pavadinimas,
+				Id_Ingredientas = restoranas.Id_Ingredientas,
+
+
+			}).ToList();
+
+			return Ok(restoranai);
 		}
 	}
 }
