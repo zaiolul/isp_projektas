@@ -3,7 +3,7 @@ import Navbar from '../navbar.jsx';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import { TextField, Button, Container } from '@mui/material';
+import { TextField, Button, Container, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 
 const UpdateForm = () => {
@@ -108,6 +108,10 @@ const UpdateForm = () => {
                                 id="outlined-required"
                                 label="Kaina"
                                 name="kaina"
+                                type="number"
+                                inputProps={{
+                                    step: 'any',
+                                }}
                                 value={updatedPatiekalas.kaina}
                                 onChange={handleInputChange}
                             />
@@ -154,25 +158,46 @@ const UpdateForm = () => {
                                 id="outlined-required"
                                 label="Kalorijos"
                                 name="kalorijos"
+                                inputProps={{
+                                    pattern: '[0-9]*',
+                                }}
                                 value={updatedPatiekalas.kalorijos}
                                 onChange={handleInputChange}
                             />
-                            <TextField
-                                required
-                                id="outlined-required"
-                                label="Tinka veganams"
-                                name="tinkaVeganams"
-                                value={updatedPatiekalas.tinkaVeganams}
-                                onChange={handleInputChange}
-                            />
-                            <TextField
-                                required
-                                id="outlined-required"
-                                label="Aštrumas"
-                                name="astrumas"
-                                value={updatedPatiekalas.astrumas}
-                                onChange={handleInputChange}
-                            />
+                            <FormControl variant="standard" sx={{ m: '1ch', minWidth: "30ch" }}>
+                                <InputLabel id="atidarymoLaikas">Tinka veganams?</InputLabel>
+                                <Select
+
+                                    required
+                                    name="tinkaVeganams"
+                                    id="outlined-required"
+                                    value={updatedPatiekalas.tinkaVeganams}
+                                    label="Tinka veganams"
+                                    onChange={handleInputChange}
+
+                                >
+                                    <MenuItem value={0}>Netinka</MenuItem>)
+                                    <MenuItem value={1}>Tinka</MenuItem>)
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="standard" sx={{ m: '1ch', minWidth: "30ch" }}>
+                                <InputLabel id="atidarymoLaikas">Aštrumas</InputLabel>
+                                <Select
+
+                                    required
+                                    name="astrumas"
+                                    id="outlined-required"
+                                    value={updatedPatiekalas.astrumas}
+                                    label="Aštrumas"
+                                    onChange={handleInputChange}
+
+                                >
+                                    <MenuItem value={1}>Neaštru</MenuItem>
+                                    <MenuItem value={2}>Aštru</MenuItem>
+                                    <MenuItem value={3}>Labai aštru</MenuItem>
+                                </Select>
+                            </FormControl>
+                          
                         </div>
                         <div>
                             <Button sx={{ width: '33ch', m: '1ch' }} variant="contained" type="submit">
