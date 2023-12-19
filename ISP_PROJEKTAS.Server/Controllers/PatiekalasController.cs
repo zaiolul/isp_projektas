@@ -67,6 +67,12 @@ namespace ISP_PROJEKTAS.Server.Controllers
 
 			return NoContent();
 		}
+		[HttpGet]
+		public ActionResult<IEnumerable<Patiekalas>> GetAllPatiekalai()
+		{
+			var allPatiekalai = _context.patiekalas.ToList();
+			return Ok(allPatiekalai);
+		}
 		[HttpPost]
 		public async Task<IActionResult> CreatePatiekalas([FromBody] JObject data)
 		{
@@ -103,7 +109,7 @@ namespace ISP_PROJEKTAS.Server.Controllers
 			await _context.SaveChangesAsync();
 			return Ok(newPatiekalas);
 		}
-		
+
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeletePatiekalas(int id)
 		{
@@ -126,10 +132,9 @@ namespace ISP_PROJEKTAS.Server.Controllers
 		[HttpGet("ingredientai")]
 		public ActionResult<IEnumerable<Ingredientai>> GetIngredientai()
 		{
-			Console.WriteLine("kazkas");
 			var ingredientai = _context.ingredientai
 				.ToList();
-			Console.WriteLine("kazkas", ingredientai);
+
 			List<Ingredientai> restoranai = ingredientai.Select(restoranas => new Ingredientai
 			{
 				pavadinimas = restoranas.pavadinimas,
@@ -139,6 +144,23 @@ namespace ISP_PROJEKTAS.Server.Controllers
 			}).ToList();
 
 			return Ok(restoranai);
+		}
+		[HttpGet("ingredientai/{fkPatiekalasID}")]
+		public async Task<ActionResult<IEnumerable<string>>> GetIngredientsByPatiekalasID(int fkPatiekalasID)
+		{
+			try
+			{
+				var ingredients = await _context.ingredientas
+					.Where(i => i.Fk_Patiekalasid == fkPatiekalasID)
+					.Select(i => i.pavadinimas)
+					.ToListAsync();
+
+				return Ok(ingredients);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, "Internal server error");
+			}
 		}
 	}
 }

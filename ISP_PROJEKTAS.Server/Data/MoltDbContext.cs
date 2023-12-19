@@ -28,7 +28,7 @@ namespace WarehelperAPI.Data
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseMySQL("Server=localhost;Database=isp;User Id=root;Password=test;Convert Zero Datetime=True;");
+			optionsBuilder.UseMySQL("Server=localhost;Database=ispdb;User Id=root;Password=test;Convert Zero Datetime=True;");
 		}
 	}
 }
