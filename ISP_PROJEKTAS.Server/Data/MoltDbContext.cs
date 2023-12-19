@@ -20,6 +20,7 @@ namespace WarehelperAPI.Data
 		public DbSet<Uzsakymas> uzsakymas { get; set; }
 		public DbSet<RestoranoKategorija> restorano_Kategorija { get; set; }
 		public DbSet<Kategorija> kategorija { get; set; }
+		public DbSet<Naudotojas> naudotojas { get; set; }
 
 		public MoltDbContext(IConfiguration configuration)
 		{
@@ -28,7 +29,7 @@ namespace WarehelperAPI.Data
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseMySQL("Server=localhost;Database=isp;User Id=root;Password=test;Convert Zero Datetime=True;");
+			optionsBuilder.UseMySQL("Server=localhost;Database=ispdb;User Id=root;Password=test;Convert Zero Datetime=True;");
 		}
 	}
 }
