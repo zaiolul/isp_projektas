@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import ReactDOM from 'react-dom';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -10,6 +10,58 @@ import Navbar from '../navbar.jsx';
 import CardActions from '@mui/material/CardActions';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf';
+
+import DeleteDialog from '../utils/ConfirmDelete';
+
+import {
+    setKey,
+    setDefaults,
+    setLanguage,
+    setRegion,
+    fromAddress,
+    fromLatLng,
+    fromPlaceId,
+    setLocationType,
+    geocode,
+    RequestType,
+} from "react-geocode";
+import { GoogleMap } from '@react-google-maps/api';
+import {
+    APIProvider,
+    Map,
+    InfoWindow,
+  } from "@vis.gl/react-google-maps";
+  
+
+function DoMap(val){
+    
+    const [center, setCenter] = useState({lat:0, lng:0})
+    setDefaults({
+        key: "AIzaSyDSblczDOlYVyG9JxSVVo2og0-mDeqX9Vc", // Your API key here.
+        language: "en", // Default language for responses.
+        region: "lt", // Default region for responses.
+    });
+
+    let address = String(val.restoranas.adresas + " " +val.restoranas.miestas)
+    console.log(address)
+    fromAddress(address)
+    .then(({ results }) => {
+      let coords = results[0].geometry.location;
+        console.log(coords)
+        setCenter(coords)
+    })
+   
+    
+    return(
+    <APIProvider apiKey={"AIzaSyDSblczDOlYVyG9JxSVVo2og0-mDeqX9Vc"}>
+    <div style={{ height: 500, width: "100%" }}>
+      <Map zoom={20} center={center}>
+      
+      </Map>
+    </div>
+  </APIProvider>
+  )
+  }
 
 export default function Restoranai() {
     const { restoranasId } = useParams();
@@ -54,6 +106,40 @@ export default function Restoranai() {
 
     const [kategorijos, setKategorijos] = useState(null);
 
+ 
+    const [center, setCenter] = useState({ lat: 0, lng: 0 });
+    const navigate = useNavigate();
+    
+    function deleteRestoranasWrap(){
+        deleteRestoranas(restoranas.restoranasID)
+        navigate("/home")
+    }
+    const deleteRestoranas = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5031/api/restoranas/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+           
+         
+            const updatedRestoranas = await fetch(`http://localhost:5031/api/restoranas`);
+
+            if (updatedRestoranas.ok) {
+                const updatedRestoranasData = await updatedRestoranas.json();
+                setRestoranas(updatedRestoranas);
+            } else {
+                throw new Error(`HTTP error! Status: ${updatedPatiekalaiResponse.status}`);
+            }
+
+        } catch (error) {
+            console.error('Error deleting Patiekalas:', error);
+        }
+    };
+  
     const deletePatiekalas = async (id) => {
         try {
             const response = await fetch(`http://localhost:5031/api/patiekalas/${id}`, {
@@ -90,16 +176,6 @@ export default function Restoranai() {
             setPatiekalai(patiekalaiData);
         };
 
-        const fetchKategorijos = async () => {
-            const kategorijosResponse = await fetch(`http://localhost:5031/api/restoranas//${restoranasId}/kategorijos`);
-            if (!kategorijosResponse.ok) {
-                throw new Error(`HTTP error! Status: ${kategorijosResponse.status}`);
-            }
-
-            const kategorijosData = await patiekalaiResponse.json();
-            setPatiekalai(kategorijosData);
-        };
-
         const fetchRestoranas = async () => {
             const restoranasResponse = await fetch(`http://localhost:5031/api/restoranas/${restoranasId}`);
             if (!restoranasResponse.ok) {
@@ -107,23 +183,44 @@ export default function Restoranai() {
             }
 
             const restoranasData = await restoranasResponse.json();
+            console.log(restoranasData)
             setRestoranas(restoranasData);
+
+        };
+
+        const fetchKategorijos = async () => {
+            const kategorijosResponse = await fetch(`http://localhost:5031/api/restoranas/${restoranasId}/kategorijos`);
+            if (!kategorijosResponse.ok) {
+                throw new Error(`HTTP error! Status: ${kategorijosResponse.status}`);
+            }
+
+            const kategorijosData = await kategorijosResponse.json();
+            setKategorijos(kategorijosData);
+            console.log(kategorijosData);
         };
 
         fetchPatiekalai();
         fetchRestoranas();
+        fetchKategorijos();
+        
+      
     }, [restoranasId]);
 
 
+  
     return (
         <div>
+            
             <Navbar>
                 <Outlet />
             </Navbar>
+               
             {restoranas && patiekalai ? (
                 <div>
                     <h1></h1>
+                    <DoMap restoranas={restoranas}></DoMap>
                     <Card sx={{ maxWidth: 800, margin: 'auto', marginTop: 5 }}>
+                   
                         <CardContent>
                             <Typography gutterBottom variant="h3" style={{ color: '#ffa726' }} component="div">
 
@@ -140,8 +237,10 @@ export default function Restoranai() {
                         <CardActions>
                             <Button
                                 component={Link}
-                                to={`/redaguotiRestorana`}
+                                to={`/redaguotiRestorana/${restoranasId}`}
                             >Redaguoti restorano informaciją</Button>
+                            {/* <Button align="right" size="small" onClick={() => {deleteRestoranas(restoranas.restoranasID), navigate("/home")}}> Pašalinti </Button> */}
+                            <DeleteDialog deleteFunc={deleteRestoranasWrap} ></DeleteDialog>
                         </CardActions>
                     </Card>
 
@@ -172,6 +271,7 @@ export default function Restoranai() {
                                         <Typography gutterBottom variant="h5" component="div">
 
                                             {patiekalas.pavadinimas}
+
                                             <Typography align="right " variant="body2" color="text.secondary">
                                                 {patiekalas.tinkaVeganams === 1 && <EnergySavingsLeafIcon style={{ color: "#88cc00" }} />}
                                             </Typography>
